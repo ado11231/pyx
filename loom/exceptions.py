@@ -17,5 +17,8 @@ class InterpreterError(LoomError):
     """
     Error that is raised when something goes wrong inside a running subinterpreter
     """
-    pass
 
+    def __init__(self, interpreter_id, original_error):
+        self.interpreter_id = interpreter_id
+        self.original_error = original_error
+        super().__init__(f"Interpreter {interpreter_id} failed {original_error}")
