@@ -1,16 +1,15 @@
 from future import LoomFuture
 import threading
 
-
 class Dispatcher: 
     def __init__(self, pool):
         self._pool = pool
 
     def submit(self, function, args):
-        future_loom = LoomFuture()
-        thread1 = threading.Thread(target = self._run_task, args = (future_loom, function, args))
-        thread1.start()
-        return future_loom
+        future = LoomFuture()
+        thread = threading.Thread(target = self._run_task, args = (future, function, args))
+        thread.start()
+        return future
 
     def _run_task(self, future, function, args):
         try:
@@ -18,7 +17,3 @@ class Dispatcher:
             future.set_result(result)
         except Exception as e:
             future.set_exception(e)
-
-
-
-
