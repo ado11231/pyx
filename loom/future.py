@@ -29,7 +29,7 @@ class LoomFuture:
     def done(self):
         return self._state != "PENDING"
     
-    def wait(self, timeout=5):
+    def wait(self, timeout = 30):
         start = time.time()
         while self._state == "PENDING":
             if time.time() - start > timeout:
