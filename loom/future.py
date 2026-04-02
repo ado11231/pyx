@@ -5,13 +5,16 @@ class LoomFuture:
         self._exception = None
 
     def set_result(self, result):
-        self.result = result
+        if self._state != "PENDING":
+            raise RuntimeError("Future is already resolved")
+        self._result = result
         self._state = "DONE"
 
     def set_exception(self, exc):
+        if self._state != "PENDING":
+            raise RuntimeError("Future is already resolved")
         self._exception = exc
         self._state = "FAILED"
-
 
     def result(self):
         if self._state == "PENDING":
@@ -22,10 +25,6 @@ class LoomFuture:
             return self._result
         
     def done(self):
-        if self._state == "PENDING":
-            return False
-        else:
-            return True
-            
+        return self._state != "PENDING"
         
 
