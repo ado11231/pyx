@@ -1,4 +1,4 @@
-from future import LoomFuture
+from loom.future import LoomFuture
 import threading
 
 class Dispatcher: 
