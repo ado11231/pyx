@@ -13,6 +13,7 @@ def heavy_process_image(image):
     for _ in range(10):
         gray = np.mean(gray * 2 + gray / 3)
     return gray
+
 def main():
     images = []
     gray_images = []

@@ -1,14 +1,17 @@
 import _interpreters
+import queue
 
 class InterpreterPool:
     def __init__(self, workers):
         self.workers = workers
         self._interpreters = []
         self._shutdown = False
+        self._free = queue.Queue()
 
         for _ in range(self.workers):
             interp_id = _interpreters.create()
             self._interpreters.append(interp_id)
+            self._free.put(interp_id)
 
     def __enter__(self):
         return self
@@ -27,3 +30,9 @@ class InterpreterPool:
 
         self._interpreters.clear()
         print(f"Pool Shutting Down, {self.workers} Instances Destroyed")
+
+    def acquire(self):
+        return self._free.get()
+        
+    def release(self, interp_id):
+        self._free.put(interp_id)
