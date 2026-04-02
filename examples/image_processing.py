@@ -2,6 +2,8 @@ import numpy as np
 import time as time
 from loom.pool import InterpreterPool
 from loom.dispatcher import Dispatcher
+from loom.future import LoomFuture
+
 
 def process_image(image):
     gray = np.mean(image, axis = 2)
@@ -37,6 +39,7 @@ def main():
 
         loom_results = []
         for future in futures:
+            future.wait()
             loom_results.append(future.result())
 
     loom_end = time.time()
