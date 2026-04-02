@@ -27,4 +27,3 @@ class LoomFuture:
     def done(self):
         return self._state != "PENDING"
         
-
