@@ -10,9 +10,10 @@ def simple_process_image(image):
 
 def heavy_process_image(image):
     gray = np.mean(image, axis=2)
-    for _ in range(10):
-        gray = np.mean(gray * 2 + gray / 3)
+    for _ in range(100):
+        gray = np.sqrt(np.abs(gray * 1.1 + gray / 1.5))
     return gray
+
 def main():
     images = []
     gray_images = []
@@ -43,11 +44,12 @@ def main():
 
         loom_results = []
         for future in futures:
-            future.wait()
             loom_results.append(future.result())
+
+        dispatcher.shutdown()
 
     loom_end = time.time()
     
     print(f"Loom: {loom_end - loom_start:.4f} seconds")
 
-main()  
+main()
