@@ -4,11 +4,15 @@ from loom.pool import InterpreterPool
 from loom.dispatcher import Dispatcher
 from loom.future import LoomFuture
 
-
-def process_image(image):
+def simple_process_image(image):
     gray = np.mean(image, axis = 2)
     return gray
 
+def heavy_process_image(image):
+    gray = np.mean(image, axis=2)
+    for _ in range(10):
+        gray = np.mean(gray * 2 + gray / 3)
+    return gray
 def main():
     images = []
     gray_images = []
@@ -20,7 +24,7 @@ def main():
     sc_start = time.time()
 
     for image in images:
-        gray_image = process_image(image)
+        gray_image = heavy_process_image(image)
         gray_images.append(gray_image)
 
     sc_end = time.time()
@@ -34,7 +38,7 @@ def main():
 
         futures = []
         for image in images:
-            future = dispatcher.submit(process_image, (image,))
+            future = dispatcher.submit(heavy_process_image, (image,))
             futures.append(future)
 
         loom_results = []
