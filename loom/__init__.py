@@ -1,3 +1,4 @@
+# Public API surface for the loom package
 from loom.pool import InterpreterPool
 from loom.dispatcher import Dispatcher
 from loom.memory import SharedArray

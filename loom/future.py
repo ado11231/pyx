@@ -1,3 +1,4 @@
+# Represents the result of an async task, allowing callers to block until the result is ready
 import threading
 
 class LoomFuture:

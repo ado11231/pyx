@@ -1,3 +1,4 @@
+# Submits tasks to sub-interpreters via shared memory and manages their execution lifecycle
 from loom.future import LoomFuture
 from loom.memory import SharedArray
 from concurrent.futures import ThreadPoolExecutor
