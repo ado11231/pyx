@@ -1,3 +1,4 @@
+# Wraps a numpy array in shared memory so it can be accessed across sub-interpreters
 import numpy as np
 from multiprocessing.shared_memory import SharedMemory
 

@@ -1,3 +1,4 @@
+# Manages a pool of sub-interpreters that can be acquired and released for parallel task execution
 import _interpreters
 import queue
 
@@ -36,4 +37,3 @@ class InterpreterPool:
         
     def release(self, interp_id):
         self._free.put(interp_id)
-        

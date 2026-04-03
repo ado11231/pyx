@@ -1,3 +1,4 @@
+# Benchmarks single-core vs loom parallel processing on 100 synthetic images
 import numpy as np
 import time as time
 from loom.pool import InterpreterPool

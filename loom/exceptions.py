@@ -1,3 +1,4 @@
+# Custom exceptions for loom errors (pool shutdown, interpreter failures)
 class LoomError(Exception):
     """
     Default base exception for everything in this project
