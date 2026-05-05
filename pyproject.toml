@@ -20,4 +20,4 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/ado11231/loom"
+Repository = "https://github.com/ado11231/pyx-plus-plus"
