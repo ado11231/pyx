@@ -1,7 +1,7 @@
 # Represents the result of an async task, allowing callers to block until the result is ready
 import threading
 
-class LoomFuture:
+class SharedxFuture:
     def __init__(self):
         self._state = "PENDING"
         self._result = None
@@ -30,4 +30,3 @@ class LoomFuture:
 
     def done(self):
         return self._state != "PENDING"
-    
