@@ -4,7 +4,7 @@ A collection of low-level Python performance libraries that push CPython beyond 
 
 ## Packages
 
-### [loom](./loom/)
+### [sharedx](./sharedx/)
 True CPU parallelism for Python using sub-interpreters — async-style API, zero-copy shared memory, no pickle overhead. Requires Python 3.12+.
 
 ### [jitctl](./jitctl/)
@@ -15,7 +15,7 @@ Hints-based developer control over CPython's JIT compiler via decorators (`@jit_
 Each package is installed independently:
 
 ```bash
-# loom
+# sharedx
 
 True CPU parallelism for Python using sub interpreters — async-style API, zero-copy shared memory, no pickle overhead.
 
@@ -25,7 +25,7 @@ True CPU parallelism for Python using sub interpreters — async-style API, zero
 
 Python can't easily use all your CPU cores at once. The GIL forces threads to take turns, and multiprocessing works around it by spawning heavy separate processes that copy all your data through pickle.
 
-Loom takes a different approach. It uses Python 3.12+'s sub interpreters — each with their own GIL — running inside one process, sharing memory directly. No pickle, no copying, no heavy process overhead.
+Sharedx takes a different approach. It uses Python 3.12+'s sub interpreters — each with their own GIL — running inside one process, sharing memory directly. No pickle, no copying, no heavy process overhead.
 
 ---
 
@@ -33,7 +33,7 @@ Loom takes a different approach. It uses Python 3.12+'s sub interpreters — eac
 
 ```
 Single Core:  1.2731 seconds
-Loom (4 workers):  0.1980 seconds
+Sharedx (4 workers):  0.1980 seconds
 
 6.4x speedup
 ```
@@ -52,14 +52,14 @@ Loom (4 workers):  0.1980 seconds
 Install directly from GitHub:
 
 ```bash
-pip install git+https://github.com/ado11231/loom.git
+pip install git+https://github.com/ado11231/pyx-plus-plus.git
 ```
 
 Or clone and install locally:
 
 ```bash
-git clone https://github.com/ado11231/loom.git
-cd loom
+git clone https://github.com/ado11231/pyx-plus-plus.git
+cd pyx-plus-plus
 pip install -e .
 ```
 
@@ -69,8 +69,8 @@ pip install -e .
 
 ```python
 import numpy as np
-from loom.pool import InterpreterPool
-from loom.dispatcher import Dispatcher
+from sharedx.pool import InterpreterPool
+from sharedx.dispatcher import Dispatcher
 
 # define a cpu heavy function
 # important: all imports must be inside the function
@@ -82,7 +82,7 @@ def process(data):
 # generate some data
 chunks = [np.random.randint(0, 255, (256, 256, 3), dtype=np.uint8) for _ in range(100)]
 
-# run in parallel with loom
+# run in parallel with sharedx
 with InterpreterPool(workers=4) as pool:
     dispatcher = Dispatcher(pool)
 
@@ -130,7 +130,7 @@ def my_task(data):
 
 ---
 
-## When to use loom
+## When to use sharedx
 
 | Use case | Good fit? |
 |---|---|
@@ -146,8 +146,8 @@ def my_task(data):
 ## Project structure
 
 ```
-loom/
-├── loom/
+sharedx/
+├── sharedx/
 │   ├── __init__.py       public API
 │   ├── pool.py           interpreter pool manager
 │   ├── dispatcher.py     task scheduler

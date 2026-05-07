@@ -1,9 +1,9 @@
-# Benchmarks single-core vs loom parallel processing on 100 synthetic images
+# Benchmarks single-core vs sharedx parallel processing on 100 synthetic images
 import numpy as np
 import time as time
-from loom.pool import InterpreterPool
-from loom.dispatcher import Dispatcher
-from loom.future import LoomFuture
+from sharedx.pool import InterpreterPool
+from sharedx.dispatcher import Dispatcher
+from sharedx.future import SharedxFuture
 
 def simple_process_image(image):
     gray = np.mean(image, axis = 2)
@@ -33,7 +33,7 @@ def main():
 
     print(f"Single Core: {sc_end - sc_start:.4f} seconds")
 
-    loom_start = time.time()
+    sharedx_start = time.time()
 
     with InterpreterPool(4) as r:
         dispatcher = Dispatcher(r)
@@ -43,14 +43,14 @@ def main():
             future = dispatcher.submit(heavy_process_image, (image,))
             futures.append(future)
 
-        loom_results = []
+        sharedx_results = []
         for future in futures:
-            loom_results.append(future.result())
+            sharedx_results.append(future.result())
 
         dispatcher.shutdown()
 
-    loom_end = time.time()
-    
-    print(f"Loom: {loom_end - loom_start:.4f} seconds")
+    sharedx_end = time.time()
+
+    print(f"Sharedx: {sharedx_end - sharedx_start:.4f} seconds")
 
 main()
