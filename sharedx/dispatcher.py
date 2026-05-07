@@ -1,25 +1,25 @@
 # Submits tasks to sub-interpreters via shared memory and manages their execution lifecycle
-from loom.future import LoomFuture
-from loom.memory import SharedArray
+from sharedx.future import SharedxFuture
+from sharedx.memory import SharedArray
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 import inspect
 import textwrap
 import _interpreters
 
-class Dispatcher: 
+class Dispatcher:
     def __init__(self, pool):
         self._pool = pool
         self._executor = ThreadPoolExecutor(max_workers = pool.workers)
 
     def submit(self, function, args):
-        future = LoomFuture()
+        future = SharedxFuture()
         input_shared = SharedArray(args[0])
         output_array = np.zeros(args[0].shape[:2], dtype = np.float64)
         output_shared = SharedArray(output_array)
         self._executor.submit(self._run_task, future, function, args, input_shared, output_shared)
         return future
-    
+
     def _run_task(self, future, function, args, input_shared, output_shared):
         interp_id = None
         try:

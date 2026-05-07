@@ -1,5 +1,5 @@
-# Custom exceptions for loom errors (pool shutdown, interpreter failures)
-class LoomError(Exception):
+# Custom exceptions for sharedx errors (pool shutdown, interpreter failures)
+class SharedxError(Exception):
     """
     Default base exception for everything in this project
     all other exceptions inherit from this
@@ -7,14 +7,14 @@ class LoomError(Exception):
     """
     pass
 
-class PoolShutdownError(LoomError):
+class PoolShutdownError(SharedxError):
     """
-    Error that is raised when a task is submitted after pool 
+    Error that is raised when a task is submitted after pool
     has been closed.
     """
     pass
 
-class InterpreterError(LoomError):
+class InterpreterError(SharedxError):
     """
     Error that is raised when something goes wrong inside a running subinterpreter
     """
