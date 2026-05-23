@@ -8,18 +8,18 @@ This is a monorepo called **pyx++** with two independent Python packages:
 
 ```
 pyx++/              ← repo root
-  sharedx/          ← sharedx package source
+  nopickle/          ← nopickle package source
   jitctl/           ← jitctl package (scaffold only — not yet implemented)
     jitctl/         ← jitctl package source (stubs)
     PLANNING.md     ← design doc and open questions for future implementation
-  pyproject.toml    ← sharedx build config
+  pyproject.toml    ← nopickle build config
 ```
 
 Each package has its own `pyproject.toml` and is installed independently. They share no code and have no dependency on each other.
 
 ---
 
-## sharedx
+## nopickle
 
 True CPU parallelism for Python using CPython sub-interpreters (`_interpreters`, available in Python 3.12+). Async-style API, zero-copy shared memory, no pickle overhead.
 
@@ -43,19 +43,19 @@ python examples/image_processing.py
 
 ### Architecture
 
-The execution flow: `InterpreterPool` → `Dispatcher` → `SharedxFuture`.
+The execution flow: `InterpreterPool` → `Dispatcher` → `NopickleFuture`.
 
-**`InterpreterPool` (`sharedx/pool.py`)** — creates N sub-interpreters at startup via `_interpreters.create()` and manages them in a `queue.Queue` for acquire/release. Supports the context manager protocol; `__exit__` calls `shutdown()` which destroys all interpreters.
+**`InterpreterPool` (`nopickle/pool.py`)** — creates N sub-interpreters at startup via `_interpreters.create()` and manages them in a `queue.Queue` for acquire/release. Supports the context manager protocol; `__exit__` calls `shutdown()` which destroys all interpreters.
 
-**`Dispatcher` (`sharedx/dispatcher.py`)** — the core task runner. Uses a `ThreadPoolExecutor` (one thread per worker) to submit tasks asynchronously. For each task it:
+**`Dispatcher` (`nopickle/dispatcher.py`)** — the core task runner. Uses a `ThreadPoolExecutor` (one thread per worker) to submit tasks asynchronously. For each task it:
 1. Wraps input/output numpy arrays in `SharedArray` (shared memory).
 2. Serializes the user function with `inspect.getsource()` + `textwrap.dedent()`.
 3. Injects the function source and shared-memory attachment code as a string into an acquired sub-interpreter via `_interpreters.exec()`.
-4. Copies the result out of the output `SharedArray` and resolves the `SharedxFuture`.
+4. Copies the result out of the output `SharedArray` and resolves the `NopickleFuture`.
 
-**`SharedArray` (`sharedx/memory.py`)** — wraps a numpy array in `multiprocessing.SharedMemory` so it's accessible across interpreter boundaries without pickling. Both interpreters attach to the same block by name.
+**`SharedArray` (`nopickle/memory.py`)** — wraps a numpy array in `multiprocessing.SharedMemory` so it's accessible across interpreter boundaries without pickling. Both interpreters attach to the same block by name.
 
-**`SharedxFuture` (`sharedx/future.py`)** — a simple future backed by `threading.Event`. Callers block on `.result(timeout=30)`.
+**`NopickleFuture` (`nopickle/future.py`)** — a simple future backed by `threading.Event`. Callers block on `.result(timeout=30)`.
 
 ### Key constraints
 

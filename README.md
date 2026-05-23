@@ -6,13 +6,13 @@ A collection of low-level Python performance libraries that push CPython beyond 
 
 ## Packages
 
-### [sharedx](./sharedx/)
+### [nopickle](./nopickle/)
 
 True CPU parallelism for Python using CPython sub-interpreters — async-style API, zero-copy shared memory, no pickle overhead. Requires Python 3.12+.
 
 ```
 Single Core:      1.2731s
-Sharedx (4 workers):  0.1980s   →  6.4x speedup
+Nopickle (4 workers):  0.1980s   →  6.4x speedup
 ```
 
 ### [jitctl](./jitctl/)
@@ -26,23 +26,23 @@ Hints-based developer control over CPython's JIT compiler via decorators (`@jit_
 Each package is installed independently.
 
 ```bash
-# sharedx
-pip install git+https://github.com/ado11231/pyx-plus-plus.git#subdirectory=sharedx
+# nopickle
+pip install git+https://github.com/ado11231/pyx-plus-plus.git#subdirectory=nopickle
 
 # or clone and install locally
 git clone https://github.com/ado11231/pyx-plus-plus.git
-cd pyx-plus-plus/sharedx
+cd pyx-plus-plus/nopickle
 pip install -e .
 ```
 
 ---
 
-## Quick start (sharedx)
+## Quick start (nopickle)
 
 ```python
 import numpy as np
-from sharedx.pool import InterpreterPool
-from sharedx.dispatcher import Dispatcher
+from nopickle.pool import InterpreterPool
+from nopickle.dispatcher import Dispatcher
 
 # All imports must be inside the function — sub-interpreters start blank
 def process(data):
@@ -80,7 +80,7 @@ Future            result comes back, no pickling needed
 
 ---
 
-## When to use sharedx
+## When to use nopickle
 
 | Use case                     | Good fit?             |
 |------------------------------|-----------------------|
