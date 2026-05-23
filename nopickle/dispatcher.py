@@ -1,6 +1,6 @@
-# Submits tasks to sub-interpreters via shared memory and manages their execution lifecycle
-from sharedx.future import SharedxFuture
-from sharedx.memory import SharedArray
+# Dispatches tasks to sub-interpreters via shared memory
+from nopickle.future import NopickleFuture
+from nopickle.memory import SharedArray
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 import inspect
@@ -10,12 +10,12 @@ import _interpreters
 class Dispatcher:
     def __init__(self, pool):
         self._pool = pool
-        self._executor = ThreadPoolExecutor(max_workers = pool.workers)
+        self._executor = ThreadPoolExecutor(max_workers=pool.workers)
 
     def submit(self, function, args):
-        future = SharedxFuture()
+        future = NopickleFuture()
         input_shared = SharedArray(args[0])
-        output_array = np.zeros(args[0].shape[:2], dtype = np.float64)
+        output_array = np.zeros(args[0].shape[:2], dtype=np.float64)
         output_shared = SharedArray(output_array)
         self._executor.submit(self._run_task, future, function, args, input_shared, output_shared)
         return future
@@ -24,7 +24,6 @@ class Dispatcher:
         interp_id = None
         try:
             interp_id = self._pool.acquire()
-
             code_string = f"""import numpy as np
 from multiprocessing.shared_memory import SharedMemory
 
@@ -45,15 +44,13 @@ _out_shm.close()
             _interpreters.exec(interp_id, code_string)
             result = output_shared.get().copy()
             future.set_result(result)
-
         except Exception as e:
             future.set_exception(e)
         finally:
             if interp_id is not None:
                 self._pool.release(interp_id)
-
             input_shared.close()
             output_shared.close()
 
     def shutdown(self):
-        self._executor.shutdown(wait = True)
+        self._executor.shutdown(wait=True)

@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "sharedx"
+name = "nopickle"
 version = "0.1.0"
 description = "True CPU parallelism for Python using sub interpreters — async-style API, zero-copy shared memory, no pickle overhead."
 readme = "README.md"

@@ -1,7 +1,7 @@
-# Represents the result of an async task, allowing callers to block until the result is ready
+# Async task result with blocking result()
 import threading
 
-class SharedxFuture:
+class NopickleFuture:
     def __init__(self):
         self._state = "PENDING"
         self._result = None
